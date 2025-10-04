@@ -1,0 +1,77 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    color:rgb(59, 57, 57);
+    background-color: rgb(255, 253, 253);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10vw;
+    height: 10vh;
+    width: 100%;
+    padding: 0 10%;
+    margin-bottom: 40px;
+}
+
+a {
+    text-decoration: none;
+    background-color: rgb(233, 139, 31);
+    padding: 10px 40px;
+    border-radius: 5px;
+    color:  rgb(255, 253, 253);
+    font-size: 1rem;
+}
+
+main {
+    width: 30vw;
+    height: 30vw;
+    min-width: 350px;
+    min-height: 350px;
+    background-color:rgb(160, 160, 160);
+    padding: 10px;
+    margin: 20px;
+    border-radius: 5px;
+}
+
+.game-board {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: space-evenly;
+    gap: 10px;
+    height: 100%;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between;
+    gap: 10px;
+    height: 25%;
+}
+
+.tile {
+    background-color:rgb(199, 198, 198);
+    border-radius: 5px;
+    width: 25%;
+    height: 100%;
+    font-size: 3rem;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.15s ease;
+}

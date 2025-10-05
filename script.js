@@ -3,12 +3,13 @@ let currentLargestTile = 2;     // If this is 2048 then user wins!
 let gameOver = false;         // Is the game finished?
 
 // DOM element references
-let gameBoard, rows;
+let gameBoard, rows, tiles;
 
 // Initialize when page loads
 document.addEventListener('DOMContentLoaded', function() {
     gameBoard = document.querySelector('.game-board');
     rows = document.querySelectorAll('.row');
+    tiles = document.querySelectorAll('.tile');
     console.log("Yeah youre good");
     addTile();
     addTile();
@@ -68,13 +69,33 @@ document.addEventListener("keydown", (event) => {
 // Function for generating a random square on the grid
 function addTile() {
     console.log("Adding tile to random spot.");
-    // Get the game-board rows
 
-    // Generate random row from available tiles
+    // Create array of available tiles
+    const openTiles = [];
 
-    // Generate random column from available tiles
+    // Check the state of the game-board tiles
+    for (i=0; i < tiles.length; i++) { // Iterate through each tile div
+      if (tiles[i].textContent  == '') { // If the tile is empty, add it to the openTiles array
+        openTiles.push(tiles[i]);
+      }
+    }
 
-    // Add value and class to tile
+    // Choose random tile from available tiles
+    if (openTiles.length > 0) { // Check to see if openTiles array is has any elements in it
+      let randomNumber = Math.floor(Math.random() * openTiles.length); // Generate random number in array
+      let randomValue = Math.floor(Math.random() * 2); // Generate random number from 0-1
+      openTiles[randomNumber].textContent = (randomValue + 1) * 2; // Set the tile's value to 2 or 4
+
+      // Add background color to tile through classes
+      if (randomValue == 0) {
+        openTiles[randomNumber].classList.add('value2');
+      } else if (randomValue == 1) {
+        openTiles[randomNumber].classList.add('value4');
+      }
+    } else {
+      console.log("No available tiles");
+      gameOver = true; // Game is over
+    }
 }
 
 // Function for making move on the game board

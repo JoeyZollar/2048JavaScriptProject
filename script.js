@@ -91,15 +91,25 @@ function addTile() {
     }
 }
 
-function compressRow(row) {
+function compressRow(row, direction) {
   let currenRowTiles = row.querySelectorAll('.tile');
   let moveMade = false;
 
-  for (i=0; i < 4; i++) {
-    let currentTile = currenRowTiles[i];
-
-    if (currentTile.textContent == '') {
-      row.append(currentTile);
+  if (direction == 'left') {
+    for (i=0; i < 4; i++) {
+      let currentTile = currenRowTiles[i];
+  
+      if (currentTile.textContent == '') {
+        row.append(currentTile);
+      }
+    }
+  } else if (direction == 'right') {
+    for (i=0; i < 4; i++) {
+      let currentTile = currenRowTiles[i];
+  
+      if (currentTile.textContent != '') {
+        row.append(currentTile);
+      }
     }
   }
 
@@ -116,27 +126,36 @@ function compressRow(row) {
   return moveMade;
 }
 
-function mergeRow(row) {
+function mergeRow(row, direction) {
   // Gwt all the tiles in the row and place them into an array
   let currenRowTiles = row.querySelectorAll('.tile');
   let moveMade = false;
 
   // Iterate through each tile
   for (i=0; i < 3; i++) {
-    let currentTile = currenRowTiles[i]; // Current tile element
-    let currentValue = currentTile.textContent; // Current tile text content
+    let currentTile, currentValue, nextTile;
+
+    if (direction == 'right') {
+      currentTile = currenRowTiles[currenRowTiles.length - (i+1)]; // Current tile element
+      currentValue = currentTile.textContent; // Current tile text content
+      nextTile = currenRowTiles[currenRowTiles.length - (i+2)]; //   
+    } else if (direction == 'left') {
+      currentTile = currenRowTiles[i]; // Current tile element
+      currentValue = currentTile.textContent; // Current tile text content
+      nextTile = currenRowTiles[i+1]; //   
+    }
 
     // If the tile has value in it
     if (currentValue != '') {
       // If the tile has the same value as the tile next to it
-      if (currentTile.textContent == currenRowTiles[i+1].textContent) {
+      if (currentTile.textContent == nextTile.textContent) {
         // Update the target tile's value and classes
         currentTile.textContent = currentValue * 2;
         currentTile.classList.add(`value${currentValue * 2}`);
         currentTile.classList.remove(`value${currentValue}`)
         // Update the adjacent tile's value and classes
-        currenRowTiles[i+1].textContent = '';
-        currenRowTiles[i+1].classList.remove(`value${currentValue}`)
+        nextTile.textContent = '';
+        nextTile.classList.remove(`value${currentValue}`)
 
         // Change moveMade since two tiles were merged
         moveMade = true;
@@ -155,11 +174,11 @@ function makeShift(direction) {
       // Iterate through each row
       for (r=0; r < 4; r++) {
         // Compress the row first, removing all blank tiles
-        let tilesMoved = compressRow(rows[r]);
+        let tilesMoved = compressRow(rows[r], 'left');
         // Merge tiles of the same value that are next to each other
-        let tilesMerged = mergeRow(rows[r]);
+        let tilesMerged = mergeRow(rows[r], 'left');
         // Compress again to remove any tiles made blank
-        compressRow(rows[r]);
+        compressRow(rows[r], 'left');
 
         console.log(`functions returned moved ${tilesMoved} and merged ${tilesMerged}`)
         if (tilesMoved || tilesMerged == true) {
@@ -175,7 +194,27 @@ function makeShift(direction) {
 
     } else if (direction == "right") {
         console.log("Shifting board right.");
-        // Code for right move
+
+        // Iterate through each row
+        for (r=0; r < 4; r++) {
+          // Compress the row first, removing all blank tiles
+          let tilesMoved = compressRow(rows[r], 'right');
+          // Merge tiles of the same value that are next to each other
+          let tilesMerged = mergeRow(rows[r], 'right');
+          // Compress again to remove any tiles made blank
+          compressRow(rows[r], 'right');
+  
+          console.log(`functions returned moved ${tilesMoved} and merged ${tilesMerged}`)
+          if (tilesMoved || tilesMerged == true) {
+            tilesChanged = true;
+          }
+        }
+        // Add a new tile after a delay
+        if (tilesChanged == true) {
+          setTimeout(() => {
+            addTile();
+          }, 150);
+        }
     } else if (direction == "up") {
         console.log("Shifting board up.");
         // Code for up move

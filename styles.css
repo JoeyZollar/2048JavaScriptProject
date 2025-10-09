@@ -83,3 +83,48 @@ main {
 .tile.value4 {
     background-color: #ede0c8;
 }
+
+.tile.value8 {
+    background-color: #F2B179;
+    color: #F9F6F2;
+}
+
+.tile.value16 {
+    background-color: #F59563;
+    color: #F9F6F2;
+}
+
+.tile.value32 {
+    background-color: #F67C5F;
+    color: #F9F6F2;
+}
+
+.tile.value64 {
+    background-color: #F65E3B;
+    color: #F9F6F2;
+}
+
+.tile.value128 {
+    background-color: #EDCF72;
+    color: #F9F6F2;
+}
+
+.tile.value256 {
+    background-color: #EDCC61;
+    color: #F9F6F2;
+}
+
+.tile.value512 {
+    background-color: #EDC850;
+    color: #F9F6F2;
+}
+
+.tile.value1024 {
+    background-color: #EDC53F;
+    color: #F9F6F2;
+}
+
+.tile.value2048 {
+    background-color: #EDC22E;
+    color: #F9F6F2;
+}

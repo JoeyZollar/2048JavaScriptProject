@@ -24,22 +24,18 @@ document.addEventListener("keydown", (event) => {
         if (response === "w") {
             console.log("w key pressed!");
             makeShift("up");
-            addTile();
             return
           } else if (response === "a") {
             console.log("a key pressed!");
-            makeShifts("left");
-            addTile();
+            makeShift("left");
             return
           } else if (response === "s") {
             console.log("s key pressed!");
             makeShift("down");
-            addTile();
             return
           } else if (response === "d") {
             console.log("d key pressed!");
             makeShift("right");
-            addTile();
             return
           }
 
@@ -47,21 +43,17 @@ document.addEventListener("keydown", (event) => {
         if (response === "ArrowUp") {
             console.log("Up arrow key pressed!");
             makeShift("up");
-            addTile();
             return
           } else if (response === "ArrowDown") {
             console.log("Down arrow key pressed!");
             makeShift("down");
-            addTile();
           } else if (response === "ArrowLeft") {
             console.log("Left arrow key pressed!");
             makeShift("left");
-            addTile();
             return
           } else if (response === "ArrowRight") {
             console.log("Right arrow key pressed!");
             makeShift("right");
-            addTile();
           }
     }
 });
@@ -94,15 +86,93 @@ function addTile() {
       }
     } else {
       console.log("No available tiles");
-      gameOver = true; // Game is over
+      // Check if there are any more available moves
+      // If there are no available moves, game is over
     }
+}
+
+function compressRow(row) {
+  let currenRowTiles = row.querySelectorAll('.tile');
+  let moveMade = false;
+
+  for (i=0; i < 4; i++) {
+    let currentTile = currenRowTiles[i];
+
+    if (currentTile.textContent == '') {
+      row.append(currentTile);
+    }
+  }
+
+  // Get the updated array of elements
+  let newRowTiles = row.querySelectorAll('.tile');
+
+  // Compare the array of divs before the move and after to see if there were any changes
+  for (i=0; i < 4; i++) {
+    if (currenRowTiles[i] != newRowTiles[i]) {
+      moveMade = true;
+    }
+  }
+
+  return moveMade;
+}
+
+function mergeRow(row) {
+  // Gwt all the tiles in the row and place them into an array
+  let currenRowTiles = row.querySelectorAll('.tile');
+  let moveMade = false;
+
+  // Iterate through each tile
+  for (i=0; i < 3; i++) {
+    let currentTile = currenRowTiles[i]; // Current tile element
+    let currentValue = currentTile.textContent; // Current tile text content
+
+    // If the tile has value in it
+    if (currentValue != '') {
+      // If the tile has the same value as the tile next to it
+      if (currentTile.textContent == currenRowTiles[i+1].textContent) {
+        // Update the target tile's value and classes
+        currentTile.textContent = currentValue * 2;
+        currentTile.classList.add(`value${currentValue * 2}`);
+        currentTile.classList.remove(`value${currentValue}`)
+        // Update the adjacent tile's value and classes
+        currenRowTiles[i+1].textContent = '';
+        currenRowTiles[i+1].classList.remove(`value${currentValue}`)
+
+        // Change moveMade since two tiles were merged
+        moveMade = true;
+      }
+    }
+  }
+  return moveMade;
 }
 
 // Function for making move on the game board
 function makeShift(direction) {
+    let tilesChanged = false;
+
     if (direction == "left") {
-        console.log("Shifting board left.");
-        // Code for left move
+      console.log("Shifting board left.");
+      // Iterate through each row
+      for (r=0; r < 4; r++) {
+        // Compress the row first, removing all blank tiles
+        let tilesMoved = compressRow(rows[r]);
+        // Merge tiles of the same value that are next to each other
+        let tilesMerged = mergeRow(rows[r]);
+        // Compress again to remove any tiles made blank
+        compressRow(rows[r]);
+
+        console.log(`functions returned moved ${tilesMoved} and merged ${tilesMerged}`)
+        if (tilesMoved || tilesMerged == true) {
+          tilesChanged = true;
+        }
+      }
+      // Add a new tile after a delay
+      if (tilesChanged == true) {
+        setTimeout(() => {
+          addTile();
+        }, 150);
+      }
+
     } else if (direction == "right") {
         console.log("Shifting board right.");
         // Code for right move

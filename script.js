@@ -251,7 +251,7 @@ function makeShift(direction) {
         // Compress and merge functions sort a div element so making a temporary div makes it easier to work with columns
         column.forEach(tile => tempRow.appendChild(tile.cloneNode(true)));
     
-        // Apply compress and merge functions using left direction since we add tiles to the column array top to bottom
+        // Apply compress and merge functions using left direction
         let moved = compressRow(tempRow, 'left');
         let merged = mergeRow(tempRow, 'left');
         compressRow(tempRow, 'left');
@@ -269,5 +269,36 @@ function makeShift(direction) {
     
     } else if (direction == "down") {
       console.log("Shifting board down.");
+      let tilesChanged = false;
+
+      // Iterate through each column
+      for (let c = 0; c < 4; c++) {
+        // Get column array from function
+        let column = getColumn(c);
+
+        // Create a temporary row in memory using a div 
+        let tempRow = document.createElement('div');
+        // Add row class to div
+        tempRow.classList.add('row');
+
+        // Create a deep clone and append each tile in the column to a fake temporary row
+        // Compress and merge functions sort a div element so making a temporary div makes it easier to work with columns
+        column.forEach(tile => tempRow.appendChild(tile.cloneNode(true)));
+
+        // Apply compress and merge functions using right direction
+        let moved = compressRow(tempRow, 'right');
+        let merged = mergeRow(tempRow, 'right');
+        compressRow(tempRow, 'right');
+
+        if (moved || merged) tilesChanged = true;
+
+        // Update the actual column
+        let newTiles = tempRow.querySelectorAll('.tile');  // Select a tiles from temp row
+        setColumn(c, newTiles); // Update DOM tiles with calculated values
+      }
+
+      if (tilesChanged) {
+        setTimeout(addTile, 150);
+      }
     }
   }

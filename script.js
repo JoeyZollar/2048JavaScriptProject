@@ -1,6 +1,6 @@
 // ===== GAME STATE VARIABLES =====
-let currentLargestTile = 2;     // If this is 2048 then user wins!
-let gameOver = false;         // Is the game finished?
+const TARGETVALUE = 2048; // If a tile is merged with this number the user wins!
+let GAMEOVER = false; // Is the game finished?
 
 // DOM element references
 let gameBoard, rows, tiles;
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Keyboard event listener
 document.addEventListener("keydown", (event) => {
     // Check if the game is over
-    if (!gameOver) {
+    if (!GAMEOVER) {
         let response = event.key;
         // Checking if the input is wasd
         if (response === "w") {
@@ -50,6 +50,50 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
+// Function for checking if the game is over
+function checkGameOver() {
+  console.log('checking for game over...')
+  // Iterate through each row
+  for (let i = 0; i < 4; i++) {
+    // Get all the tile elements from the row
+    let rowTiles = rows[i].querySelectorAll('.tile');
+
+    // Iterate through each tile/column
+    for (let j = 0; j < 4; j++) {
+      let currentValue = rowTiles[j].textContent;
+
+      // In case the tile is empty, then the game is not over
+      if (currentValue === '') {
+        console.log('empty tile detected, game not over');
+        return false;
+      }
+
+      // Check right neighbor in the same row
+      if (j < 3) { // If we are not on the fourth column
+        let rightValue = rowTiles[j + 1].textContent; // Get the value of the neighbor tile to the right
+        if (currentValue === rightValue) { // If the values are equal, then there is a merge possibiltiy
+          console.log('merge possible on right');
+          return false;
+        }
+      }
+
+      // Check below neighbor in the same column
+      if (i < 3) { // If we are not on the fourth row
+        let nextRowTiles = rows[i + 1].querySelectorAll('.tile'); // Get the tiles of the next row
+        let downValue = nextRowTiles[j].textContent; // Get the value of the neighbor tile on the bottom
+        if (currentValue === downValue && currentValue !== '') { // If the values are equal, then there is a merge possibiltiy
+          console.log('merge possible below');
+          return false;
+        }
+      }
+    }
+  }
+
+  // If there are no possible moves, the game is over and return true
+  console.log('Game over returning true.')
+  return true;
+}
+
 // Function for generating a random square on the grid
 function addTile() {
     console.log("Adding tile to random spot.");
@@ -80,6 +124,10 @@ function addTile() {
       console.log("No available tiles");
       // Check if there are any more available moves
       // If there are no available moves, game is over
+      if (checkGameOver()) {
+        GAMEOVER = true;
+        setTimeout(() => alert("Game over! No more available moves!"), 500);
+      };
     }
 }
 
@@ -149,6 +197,11 @@ function mergeRow(row, direction) {
         nextTile.textContent = '';
         nextTile.classList.remove(`value${currentValue}`)
 
+        // Check for win state
+        if (currentTile.textContent == TARGETVALUE) {
+          setTimeout(() => alert("You won!"), 500);
+        }
+
         // Change moveMade since two tiles were merged
         moveMade = true;
       }
@@ -210,6 +263,12 @@ function makeShift(direction) {
       // Add a new tile after a delay
       if (tilesChanged == true) {
         setTimeout(addTile, 150);
+      } else { // If there was an input made but not any merges or moves, check for game over
+        // Check if there are any more available moves
+        if (checkGameOver()) {
+          GAMEOVER = true;
+          setTimeout(() => alert("Game over! No more available moves!"), 500);
+        };
       }
 
     } else if (direction == "right") {
@@ -232,7 +291,14 @@ function makeShift(direction) {
         // Add a new tile after a delay
         if (tilesChanged == true) {
           setTimeout(addTile, 150);
+        } else { // If there was an input made but not any merges or moves, check for game over
+          // Check if there are any more available moves
+          if (checkGameOver()) {
+            GAMEOVER = true;
+            setTimeout(() => alert("Game over! No more available moves!"), 500);
+          };
         }
+    
     } else if (direction == "up") {
       console.log("Shifting board up.");
       let tilesChanged = false;
@@ -265,6 +331,12 @@ function makeShift(direction) {
     
       if (tilesChanged == true) {
         setTimeout(addTile, 150);
+      } else { // If there was an input made but not any merges or moves, check for game over
+        // Check if there are any more available moves
+        if (checkGameOver()) {
+          GAMEOVER = true;
+          setTimeout(() => alert("Game over! No more available moves!"), 500);
+        };
       }
     
     } else if (direction == "down") {
@@ -299,6 +371,12 @@ function makeShift(direction) {
 
       if (tilesChanged) {
         setTimeout(addTile, 150);
+      } else { // If there was an input made but not any merges or moves, check for game over
+        // Check if there are any more available moves
+        if (checkGameOver()) {
+          GAMEOVER = true;
+          setTimeout(() => alert("Game over! No more available moves!"), 500);
+        };
       }
     }
   }

@@ -22,37 +22,29 @@ document.addEventListener("keydown", (event) => {
         let response = event.key;
         // Checking if the input is wasd
         if (response === "w") {
-            console.log("w key pressed!");
             makeShift("up");
             return
           } else if (response === "a") {
-            console.log("a key pressed!");
             makeShift("left");
             return
           } else if (response === "s") {
-            console.log("s key pressed!");
             makeShift("down");
             return
           } else if (response === "d") {
-            console.log("d key pressed!");
             makeShift("right");
             return
           }
 
         // Checking if the input is an arrow key
         if (response === "ArrowUp") {
-            console.log("Up arrow key pressed!");
             makeShift("up");
             return
           } else if (response === "ArrowDown") {
-            console.log("Down arrow key pressed!");
             makeShift("down");
           } else if (response === "ArrowLeft") {
-            console.log("Left arrow key pressed!");
             makeShift("left");
             return
           } else if (response === "ArrowRight") {
-            console.log("Right arrow key pressed!");
             makeShift("right");
           }
     }
@@ -165,6 +157,36 @@ function mergeRow(row, direction) {
   return moveMade;
 }
 
+// Function to get a column in an array of tiles 
+function getColumn(colIndex) {
+  let column = [];
+
+  // Iterate through each row
+  for (let r = 0; r < 4; r++) {
+    // Get the tile elements from each row
+    const rowTiles = rows[r].querySelectorAll('.tile');
+    // Push the tile of the desired index to the column array
+    column.push(rowTiles[colIndex]);
+  }
+
+  return column;
+}
+
+// Function to update columns 
+function setColumn(colIndex, newColumnTiles) {
+  // Iterate through each row
+  for (let r = 0; r < 4; r++) {
+    const rowTiles = rows[r].querySelectorAll('.tile'); // Get all the row tile elements
+    rowTiles[colIndex].textContent = newColumnTiles[r].textContent; // Change the current column tile to the new tile value
+    
+    // Reset all value classes
+    rowTiles[colIndex].className = 'tile';
+    if (newColumnTiles[r].textContent !== '') {
+      rowTiles[colIndex].classList.add(`value${newColumnTiles[r].textContent}`);
+    }
+  }
+}
+
 // Function for making move on the game board
 function makeShift(direction) {
     let tilesChanged = false;
@@ -187,9 +209,7 @@ function makeShift(direction) {
       }
       // Add a new tile after a delay
       if (tilesChanged == true) {
-        setTimeout(() => {
-          addTile();
-        }, 150);
+        setTimeout(addTile, 150);
       }
 
     } else if (direction == "right") {
@@ -211,15 +231,43 @@ function makeShift(direction) {
         }
         // Add a new tile after a delay
         if (tilesChanged == true) {
-          setTimeout(() => {
-            addTile();
-          }, 150);
+          setTimeout(addTile, 150);
         }
     } else if (direction == "up") {
-        console.log("Shifting board up.");
-        // Code for up move
+      console.log("Shifting board up.");
+      let tilesChanged = false;
+    
+      // Iterate through each column
+      for (let i = 0; i < 4; i++) {
+        // Get column array from function
+        let column = getColumn(i);
+    
+        // Create a temporary row in memory using a div 
+        let tempRow = document.createElement('div');
+        // Add row class to div
+        tempRow.classList.add('row');
+
+        // Create a deep clone and append each tile in the column to a fake temporary row
+        // Compress and merge functions sort a div element so making a temporary div makes it easier to work with columns
+        column.forEach(tile => tempRow.appendChild(tile.cloneNode(true)));
+    
+        // Apply compress and merge functions using left direction since we add tiles to the column array top to bottom
+        let moved = compressRow(tempRow, 'left');
+        let merged = mergeRow(tempRow, 'left');
+        compressRow(tempRow, 'left');
+    
+        if (moved || merged) tilesChanged = true;
+    
+        // Update the actual column
+        let newTiles = tempRow.querySelectorAll('.tile'); // Select a tiles from temp row
+        setColumn(i, newTiles); // Update DOM tiles with calculated values
+      }
+    
+      if (tilesChanged == true) {
+        setTimeout(addTile, 150);
+      }
+    
     } else if (direction == "down") {
-        console.log("Shifting board down.");
-        // Code for down move
-    } 
-}
+      console.log("Shifting board down.");
+    }
+  }

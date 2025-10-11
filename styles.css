@@ -53,7 +53,7 @@ header {
     height: 30vh;
 }
 
-a {
+.button {
     text-decoration: none;
     background-color: rgb(233, 139, 31);
     padding: 10px 40px;
@@ -61,6 +61,18 @@ a {
     color:  rgb(255, 253, 253);
     font-size: 1rem;
     transition: all 0.3s;
+}
+
+#repoLink {
+    text-decoration: none;
+    color: #333;
+    font-size: 1rem;
+    transition: all 0.3s;
+    display:inline;
+}
+
+#footerText {
+    text-align: center;
 }
 
 #playButton {

@@ -7,12 +7,11 @@ let gameBoard, rows, tiles;
 
 // Initialize when page loads
 document.addEventListener('DOMContentLoaded', function() {
-    gameBoard = document.querySelector('.game-board');
-    rows = document.querySelectorAll('.row');
-    tiles = document.querySelectorAll('.tile');
-    console.log("Yeah youre good");
-    addTile();
-    addTile();
+  gameBoard = document.querySelector('.game-board');
+  rows = document.querySelectorAll('.row');
+  tiles = document.querySelectorAll('.tile');
+  addTile();
+  addTile();
 });
 
 // Keyboard event listener
